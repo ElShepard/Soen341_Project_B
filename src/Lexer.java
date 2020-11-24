@@ -7,19 +7,16 @@
 
 import java.io.*;
 
-public class Lexer implements ILexer, Opcode {
-    /** Create a lexer that scans the given character stream. */
-    public Lexer(Srcfile sourcefile) {
-        // your code...
+public class Lexer {
 
-        // Enter all mnemonics as keywords in the symbol table...
 
-        linePos = 1;
-        colPos = 0;
-        curlinePos = linePos;
-        curcolPos = colPos;
+    private final Sourcefile asmFile;
 
-        read(); // prime
+    public Lexer(Sourcefile asmFile) throws IOException {
+        this.asmFile = asmFile;
+        File f = asmFile.srcFile;
+        Filereader fr = new FileReader(f);
+        this.br = new BufferedReader(fr);
     }
 
     /* Read the next character. */
