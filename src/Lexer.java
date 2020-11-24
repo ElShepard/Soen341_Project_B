@@ -1,64 +1,49 @@
-/*
- * Lexer_Skeleton.java - A lexical analyser extracts tokens by reading
- *                       characters from a source file (.asm) for the parser.
- *
- * @author  Michel de Champlain
- */
 
 import java.io.*;
+import java.util.ArrayList;
 
 public class Lexer {
 
 
-    private final Sourcefile asmFile;
+    Sourcefile asmFile;
+    BufferedReader br;
+    int colPos = 0;
+    ArrayList<Node> nodes = new ArrayList<Node>();
 
-    public Lexer(Sourcefile asmFile) throws IOException {
+    public Lexer(Sourcefile asmFile) throws IOException
+    {
         this.asmFile = asmFile;
         File f = asmFile.srcFile;
-        Filereader fr = new FileReader(f);
+        FileReader fr = new FileReader(f);
         this.br = new BufferedReader(fr);
     }
 
-    /* Read the next character. */
-    private int read() {
-        colPos++;
-        return ch = reader.read();
+
+    public void scanIdentifier(int c , Map map) throws IOException
+    {
+        String identifier = "";
+        while (c != ' ' && c != '\t' && c != '\n' && c != '\r') {
+            char cn = (char) c;
+            identifier = identifier + cn;
+            c = this.br.read();
+        }
+        if (map.getValue(identifier) != null) {
+            nodes.get(nodes.size() + 1).instruction = identifier;
+        }
     }
 
-    private void error(String t) {
-        errorReporter.record( _Error.create(t, getPosition()) );
-    }
+    public void readAsm(Map map) throws IOException
+    {
 
-    private void scanNumber() {
-        // your code...
-    }
-    private int scanIdentifier() {
-        // your code...
-    }
-    private int scanDirective() {
-        // your code...
-    }
-    private int scanString() {
-        // your code...
-    }
-    /**
-     * Scan the next token. Mark position on entry in case of error.
-     * @return   the token.
-     */
-    public int getToken() {
-        // skip whitespaces
-        // "\n", "\r\n", "\n", or line comments are considered as EOL
+        int line = 1;
+        int add = 0;
+            int c = ' ';
 
-        // your code...
-
-        // Mark position (after skipping blanks)
-        curlinePos = linePos;
-        curcolPos = colPos;
-
-        while (true) {
-            switch ( ch ) {
-                case -1:
-                    return EOF;
+        while (c != -1) {
+            switch ( c ) {
+                case ' ':
+                    c = this.br.read();
+                    break;
 
                 case 'a': case 'b': case 'c': case 'd': case 'e':
                 case 'f': case 'g': case 'h': case 'i': case 'j':
@@ -73,28 +58,19 @@ public class Lexer {
                 case 'U': case 'V': case 'W': case 'X': case 'Y':
                 case '_':
                 case 'Z':
-                    return scanIdentifier();
 
-                case '.':  /* dot for directives as a first character */
-                    return scanDirective();
+                    nodes.add(new Node());
+                    nodes.get(nodes.size() -1 ).position.setLine(line);
+                    nodes.get(nodes.size() -1).address = add;
+                    scanIdentifier(c, map);
+                    c = this.br.read();
+                    line++;
+                    add++;
+                    break;
+                case '\n' : case '\r' :
+                    c = this.br.read();
 
 
-                case '0': case '1': case '2': case '3': case '4':
-                case '5': case '6': case '7': case '8': case '9':
-                    scanNumber();
-                    return NUMBER;
-
-                case '-':
-                    read(); return MINUS;
-
-                case ',':
-                    read(); return COMMA;
-
-                case '"':
-                    return scanString();
-
-                default:
-                    read(); return ILLEGAL_CHAR;
             }
         }
     }
