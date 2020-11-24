@@ -7,13 +7,9 @@
 
 import java.io.*;
 
-public interface ILexer {
-    int  getToken();
-}
-
 public class Lexer implements ILexer, Opcode {
     /** Create a lexer that scans the given character stream. */
-    public Lexer(IReader reader, ISymbolTable keywordTable) {
+    public Lexer(Srcfile sourcefile) {
         // your code...
 
         // Enter all mnemonics as keywords in the symbol table...
