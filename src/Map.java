@@ -24,11 +24,65 @@ public class Map<K, V> {
     {
         return (getSize() == 0);
     }
-    private getIndex(K key) {
+
+    private int getIndex(K key) {
         int hashcode = key.hashCode();
         int index = hashcode % hexArrayCapacity;
-        return
+        return index;
     }
+    public V removeKey (K key)
+    {
+        int index = getIndex(key);
+        HashNode<K,V> head = hexArray.get(index);
+        HashNode<K,V> prev = null;
+        while(head != null)
+        {
+            if(head.key.equals(key))
+            {
+                break;
+            }
+            prev = head;
+            head = head.next;
+        }
+        if(head == null)
+        {
+            return null;
+        }
+        size--;
+        if(prev!=null)
+            prev.next=head.next;
+        else {
+            hexArray.set(index,head.next);
+        }
+        return head.value;
+    }
+    public V getValue(K key)
+    {
+        int index = getIndex(key);
+        HashNode<K,V> head = hexArray.get(index);
+
+        while(head != null) {
+            if(head.key.equals(key))
+                return head.value;
+            head = head.next;
+        }
+        return null;
+    }
+    public void addKeyValue(K key, V value)
+    {
+        int index = getIndex(key);
+        HashNode<K,V> head = hexArray.get(index);
+
+        while(head==null)
+        {
+            if (head.key.equals(key))
+            {
+                head.value = value;
+            }
+
+        }
+
+
     public String getValue(String  identifier) {
 
         return identifier;
