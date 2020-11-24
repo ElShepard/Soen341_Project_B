@@ -12,7 +12,7 @@ public class Position {
     public void setLine(int line){
         this.line = line;
     }
-    public int getColumn() {
+    public void getColumn() {
         return column;
     }
     public void setCol(int column) {

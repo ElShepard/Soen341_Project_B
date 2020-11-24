@@ -4,10 +4,8 @@ import java.util.ArrayList;
 
 public class Lexer {
 
-
     Sourcefile asmFile;
     BufferedReader br;
-    int colPos = 0;
     ArrayList<Node> nodes = new ArrayList<Node>();
 
     public Lexer(Sourcefile asmFile) throws IOException
